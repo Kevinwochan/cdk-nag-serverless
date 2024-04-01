@@ -19,7 +19,7 @@ import LambdaLogging from './rules/lambda/LambdaLogging';
 export class ServerlessChecks extends NagPack {
     constructor(props?: NagPackProps) {
         super(props);
-        this.packName = 'Example';
+        this.packName = 'Serverless';
     }
     public visit(node: IConstruct): void {
         if (node instanceof CfnResource) {
