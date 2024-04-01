@@ -16,6 +16,7 @@ export default Object.defineProperty(
         if (node instanceof CfnFunction) {
             const loggingConfig = Stack.of(node).resolve(node.loggingConfig);
             if (loggingConfig) return NagRuleCompliance.COMPLIANT;
+            return NagRuleCompliance.NON_COMPLIANT;
         }
         return NagRuleCompliance.NOT_APPLICABLE;
     },

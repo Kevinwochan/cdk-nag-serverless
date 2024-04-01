@@ -16,6 +16,7 @@ export default Object.defineProperty(
         if (node instanceof CfnFunction) {
             const tracingConfig = Stack.of(node).resolve(node.tracingConfig);
             if (tracingConfig === aws_lambda.Tracing.ACTIVE) return NagRuleCompliance.COMPLIANT;
+            return NagRuleCompliance.NON_COMPLIANT;
         }
         return NagRuleCompliance.NOT_APPLICABLE;
     },
