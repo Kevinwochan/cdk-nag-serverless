@@ -5,7 +5,6 @@ SPDX-License-Identifier: Apache-2.0
 import { parse } from 'path';
 import { CfnResource, Stack } from 'aws-cdk-lib';
 import { NagRuleCompliance } from 'cdk-nag';
-import { CfnApi } from 'aws-cdk-lib/aws-sam';
 import { CfnGraphQLApi } from 'aws-cdk-lib/aws-appsync';
 
 /**
