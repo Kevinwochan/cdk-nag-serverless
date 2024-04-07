@@ -158,7 +158,7 @@ export class ServerlessChecks extends NagPack {
             info: 'Ensure SNS subscriptions have a DLQ configured',
             explanation: "When a Dead Letter Queue (DLQ) is specified, messages that fail to deliver to targets are stored in the Dead Letter Queue",
             level: NagMessageLevel.ERROR,
-            rule: sns.SNSDLQ,
+            rule: sns.SNSDeadLetterQueue,
             node: node,
         });
     }
