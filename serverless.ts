@@ -26,6 +26,7 @@ export class ServerlessChecks extends NagPack {
             this.checkEventBridge(node);
             this.checkSNS(node);
             this.checkSQS(node);
+            this.checkStepFunctions(node);
         }
     }
 
@@ -175,6 +176,21 @@ export class ServerlessChecks extends NagPack {
             explanation: "When a Dead Letter Queue (DLQ) is specified, messages that fail to deliver to targets are stored in the Dead Letter Queue",
             level: NagMessageLevel.ERROR,
             rule: rules.sqs.SQSQueueDLQ,
+            node: node,
+        });
+    }
+
+    /**
+     * Check StepFunctions Resources
+     * @param node the CfnResource to check
+     * @param ignores list of ignores for the resource
+     */
+    private checkStepFunctions(node: CfnResource) {
+        this.applyRule({
+            info: 'Ensure StepFunctions have a DLQ configured',
+            explanation: "AWS StepFunctions provides active tracing support for AWS X-Ray. Enable active tracing on your API stages to sample incoming requests and send traces to X-Ray.",
+            level: NagMessageLevel.ERROR,
+            rule: rules.stepfunctions.StepFunctionStateMachineXray,
             node: node,
         });
     }
