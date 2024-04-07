@@ -4,9 +4,6 @@ import {
     NagMessageLevel,
     NagPack,
     NagPackProps,
-    NagRuleCompliance,
-    NagRuleResult,
-    NagRules,
     rules,
 } from 'cdk-nag';
 import { lambda } from './rules';
@@ -38,7 +35,7 @@ export class ServerlessChecks extends NagPack {
             info: 'Ensure Lambda event source mappings have a destination configured',
             explanation: 'When an AWS Lambda invocation fails to process an event from your source mapping, a onFailure destination configuration defines where the event will be temporarily stored, usually a SQS DLQ',
             level: NagMessageLevel.ERROR,
-            rule: lambda.LambdaEventSourceMappingDestination,
+            rule: lambda.LambdaESMDestination,
             node: node,
         })
         this.applyRule({

@@ -4,80 +4,12 @@ SPDX-License-Identifier: Apache-2.0
 */
 export { default as LambdaLogging } from './LambdaLogging'
 export { default as LambdaTracing } from './LambdaTracing'
-export { default as LambdaESMDestinationRule } from './LambdaESMDestination'
+export { default as LambdaESMDestination } from './LambdaESMDestination'
 
 /*
 """
 Rules for Lambda resources
 """
-class LambdaESMDestinationRule(CloudFormationLintRule):
-    id = "ES1001"  # noqa: VNE003
-    shortdesc = "Lambda Event Source Mapping Destination"
-    description = "Ensure Lambda event source mappings have a destination configured"
-    source_url = "https://awslabs.github.io/serverless-rules/rules/lambda/eventsourcemapping_failure_destination/"
-    tags = ["lambda"]
-
-    _message = "Lambda event source mapping {} should have a DestinationConfig.OnFailure.Destination property."
-
-    def match(self, cfn):
-        """
-        Match against Event Source Mappings without a destination configured
-        """
-
-        matches = []
-
-        for key, value in cfn.get_resources(["AWS::Lambda::EventSourceMapping"]).items():
-            destination = (
-                value.get("Properties", {}).get("DestinationConfig", {}).get("OnFailure", {}).get("Destination", False)
-            )
-
-            if not destination:
-                matches.append(RuleMatch(["Resources", key], self._message.format(key)))
-
-        return matches
-
-
-class LambdaPermissionPrincipalsRule(CloudFormationLintRule):
-    """
-    Ensure that Lambda functions do not have Lambda permissions with different principals
-    """
-
-    id = "WS1002"  # noqa: VNE003
-    shortdesc = "Lambda Permission Principals"
-    description = "Ensure that Lambda functions do not have Lambda permissions with different principals"
-    source_url = "https://awslabs.github.io/serverless-rules/rules/lambda/permission_multiple_principals/"
-    tags = ["lambda"]
-    _message = "Lambda function {} has Lambda permissions with different principals"
-
-    def _get_permissions(self, cfn):
-        """
-        Parse all AWS::Lambda::Permissions in the template
-        """
-
-        permissions = defaultdict(list)
-
-        for _, value in cfn.get_resources(["AWS::Lambda::Permission"]).items():
-            principal = Value(value.get("Properties", {}).get("Principal", ""))
-            function_name = Value(value.get("Properties", {}).get("FunctionName", ""))
-
-            for reference in function_name.references:
-                permissions[reference].append(principal.id)
-
-        return permissions
-
-    def match(self, cfn):
-        """
-        Match against Lambda functions with multiple Principal for Permissions
-        """
-
-        matches = []
-
-        for key, value in self._get_permissions(cfn).items():
-            if len(set(value)) > 1:
-                matches.append(RuleMatch(["Resources", key], self._message.format(key)))
-
-        return matches
-
 
 class LambdaStarPermissionRule(CloudFormationLintRule):
     """
