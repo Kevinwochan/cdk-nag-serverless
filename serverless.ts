@@ -193,5 +193,12 @@ export class ServerlessChecks extends NagPack {
             rule: rules.stepfunctions.StepFunctionStateMachineXray,
             node: node,
         });
+        this.applyRule({
+            info: 'Ensure Stepfunctions have been configured to log all events to cloudwatch',
+            explanation: "When a logging configuration is configured, errors can be captured in CLoudWatch Logs",
+            level: NagMessageLevel.ERROR,
+            rule: rules.stepfunctions.StepFunctionStateMachineAllLogsToCloudWatch,
+            node: node,
+        })
     }
 }
