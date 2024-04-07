@@ -3,7 +3,7 @@ Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 SPDX-License-Identifier: Apache-2.0
 */
 import { parse } from 'path';
-import { CfnResource } from 'aws-cdk-lib';
+import { CfnResource, Stack } from 'aws-cdk-lib';
 import { CfnFunction } from 'aws-cdk-lib/aws-lambda';
 import { NagRuleCompliance } from 'cdk-nag';
 
@@ -14,7 +14,8 @@ import { NagRuleCompliance } from 'cdk-nag';
 export default Object.defineProperty(
     (node: CfnResource): NagRuleCompliance => {
         if (node instanceof CfnFunction) {
-            if (node.memorySize) return NagRuleCompliance.COMPLIANT;
+            const memorySize = Stack.of(node).resolve(node.memorySize);
+            if (memorySize) return NagRuleCompliance.COMPLIANT;
             return NagRuleCompliance.NON_COMPLIANT;
         }
         return NagRuleCompliance.NOT_APPLICABLE;
