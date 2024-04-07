@@ -6,7 +6,7 @@ import {
     NagPackProps,
     rules,
 } from 'cdk-nag';
-import { lambda, apigw } from './rules';
+import { lambda, apigw, appsync } from './rules';
 
 /**
  * Serverless Checks are a compilation of rules to validate infrastructure-as-code template against recommended practices.
@@ -22,6 +22,7 @@ export class ServerlessChecks extends NagPack {
             this.checkLambda(node);
             this.checkCloudwatch(node);
             this.checkApiGw(node);
+            this.checkAppSync(node);
         }
     }
 
@@ -110,6 +111,21 @@ export class ServerlessChecks extends NagPack {
             explanation: "API Gateway provides access logging for API stages. Enable access logging on your API stages to monitor API requests and responses.",
             level: NagMessageLevel.ERROR,
             rule: apigw.APIGWStructuredLogging,
+            node: node,
+        });
+    }
+
+    /**
+     * Check AppSync Resources
+     * @param node the CfnResource to check
+     * @param ignores list of ignores for the resource
+     */
+    private checkAppSync(node: CfnResource) {
+        this.applyRule({
+            info: 'Ensure tracing is enabled',
+            explanation: "AWS AppSync provides active tracing support for AWS X-Ray. Enable active tracing on your API stages to sample incoming requests and send traces to X-Ray.",
+            level: NagMessageLevel.ERROR,
+            rule: appsync.AppSyncTracing,
             node: node,
         });
     }
