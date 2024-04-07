@@ -6,7 +6,7 @@ import {
     NagPackProps,
     rules,
 } from 'cdk-nag';
-import { lambda } from './rules';
+import { lambda, apigw } from './rules';
 
 /**
  * Serverless Checks are a compilation of rules to validate infrastructure-as-code template against recommended practices.
@@ -96,6 +96,20 @@ export class ServerlessChecks extends NagPack {
             explanation: "Amazon API Gateway provides active tracing support for AWS X-Ray. Enable active tracing on your API stages to sample incoming requests and send traces to X-Ray.",
             level: NagMessageLevel.ERROR,
             rule: rules.apigw.APIGWXrayEnabled,
+            node: node,
+        });
+        this.applyRule({
+            info: 'Ensure API Gateway stages have access logging enabled',
+            explanation: "API Gateway provides access logging for API stages. Enable access logging on your API stages to monitor API requests and responses.",
+            level: NagMessageLevel.ERROR,
+            rule: rules.apigw.APIGWAccessLogging,
+            node: node,
+        });
+        this.applyRule({
+            info: 'Ensure API Gateway stages have access logging enabled',
+            explanation: "API Gateway provides access logging for API stages. Enable access logging on your API stages to monitor API requests and responses.",
+            level: NagMessageLevel.ERROR,
+            rule: apigw.APIGWStructuredLogging,
             node: node,
         });
     }
