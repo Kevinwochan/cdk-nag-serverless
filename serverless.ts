@@ -25,6 +25,7 @@ export class ServerlessChecks extends NagPack {
             this.checkAppSync(node);
             this.checkEventBridge(node);
             this.checkSNS(node);
+            this.checkSQS(node);
         }
     }
 
@@ -159,6 +160,21 @@ export class ServerlessChecks extends NagPack {
             explanation: "When a Dead Letter Queue (DLQ) is specified, messages that fail to deliver to targets are stored in the Dead Letter Queue",
             level: NagMessageLevel.ERROR,
             rule: sns.SNSDeadLetterQueue,
+            node: node,
+        });
+    }
+
+    /**
+     * Check SQS Resources
+     * @param node the CfnResource to check
+     * @param ignores list of ignores for the resource
+     */
+    private checkSQS(node: CfnResource) {
+        this.applyRule({
+            info: 'Ensure SQS queues have a DLQ configured',
+            explanation: "When a Dead Letter Queue (DLQ) is specified, messages that fail to deliver to targets are stored in the Dead Letter Queue",
+            level: NagMessageLevel.ERROR,
+            rule: rules.sqs.SQSQueueDLQ,
             node: node,
         });
     }
