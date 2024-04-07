@@ -8,7 +8,7 @@ import { NagRuleCompliance } from 'cdk-nag';
 import { CfnRule } from 'aws-cdk-lib/aws-events';
 
 /**
- * Ensure that API Gateway REST and HTTP APIs are using JSON structured logs
+ * Ensure that EventBus targets have configure a DLQ
  * @param node the CfnResource to check
  */
 export default Object.defineProperty(
