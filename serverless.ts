@@ -46,10 +46,10 @@ export class ServerlessChecks extends NagPack {
             node: node,
         });
         this.applyRule({
-            info: 'Ensure Lambda event source mappings have a destination configured',
-            explanation: 'When an AWS Lambda invocation fails to process an event from your source mapping, a onFailure destination configuration defines where the event will be temporarily stored, usually a SQS DLQ',
+            info: 'Ensure Lambda functions have a onFaliure destination configured',
+            explanation: 'When a lambda function has a onFailure destination configured, failed messages can be temporarily stored to be later reviewed',
             level: NagMessageLevel.ERROR,
-            rule: lambda.LambdaESMDestination,
+            rule: rules.lambda.LambdaDLQ,
             node: node,
         })
         this.applyRule({
