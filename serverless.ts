@@ -6,7 +6,7 @@ import {
     NagPackProps,
     rules,
 } from 'cdk-nag';
-import { lambda, apigw, appsync } from './rules';
+import { lambda, apigw, appsync, eventbridge } from './rules';
 
 /**
  * Serverless Checks are a compilation of rules to validate infrastructure-as-code template against recommended practices.
@@ -23,6 +23,7 @@ export class ServerlessChecks extends NagPack {
             this.checkCloudwatch(node);
             this.checkApiGw(node);
             this.checkAppSync(node);
+            this.checkEventBridge(node);
         }
     }
 
@@ -126,6 +127,22 @@ export class ServerlessChecks extends NagPack {
             explanation: "AWS AppSync provides active tracing support for AWS X-Ray. Enable active tracing on your API stages to sample incoming requests and send traces to X-Ray.",
             level: NagMessageLevel.ERROR,
             rule: appsync.AppSyncTracing,
+            node: node,
+        });
+    }
+
+
+    /**
+     * Check EventBridge Resources
+     * @param node the CfnResource to check
+     * @param ignores list of ignores for the resource
+     */
+    private checkEventBridge(node: CfnResource) {
+        this.applyRule({
+            info: 'Ensure eventbridge targets have a DLQ configured',
+            explanation: "When a Dead Letter Queue (DLQ) is specified, messages that fail to deliver to targets are stored in the Dead Letter Queue",
+            level: NagMessageLevel.ERROR,
+            rule: eventbridge.EventBusDLQ,
             node: node,
         });
     }
