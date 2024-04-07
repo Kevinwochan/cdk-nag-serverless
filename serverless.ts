@@ -9,8 +9,7 @@ import {
     NagRules,
     rules,
 } from 'cdk-nag';
-import LambdaTracing from './rules/lambda/LambdaTracing';
-import LambdaLogging from './rules/lambda/LambdaLogging';
+import { lambda } from './rules';
 
 /**
  * Serverless Checks are a compilation of rules to validate infrastructure-as-code template against recommended practices.
@@ -36,11 +35,18 @@ export class ServerlessChecks extends NagPack {
      */
     private checkLambda(node: CfnResource) {
         this.applyRule({
+            info: 'Ensure Lambda event source mappings have a destination configured',
+            explanation: 'When an AWS Lambda invocation fails to process an event from your source mapping, a onFailure destination configuration defines where the event will be temporarily stored, usually a SQS DLQ',
+            level: NagMessageLevel.ERROR,
+            rule: lambda.LambdaEventSourceMappingDestination,
+            node: node,
+        })
+        this.applyRule({
             info: 'The Lambda function should have tracing set to Tracing.ACTIVE',
             explanation:
                 "When a Lambda function has ACTIVE tracing, Lambda automatically samples invocation requests, based on the sampling algorithm specified by X-Ray.",
             level: NagMessageLevel.ERROR,
-            rule: LambdaTracing,
+            rule: lambda.LambdaTracing,
             node: node,
         });
 
@@ -48,7 +54,7 @@ export class ServerlessChecks extends NagPack {
             info: 'Ensure that Lambda functions have a corresponding Log Group',
             explanation: "Lambda captures logs for all requests handled by your function and sends them to Amazon CloudWatch Logs.  You can insert logging statements into your code to help you validate that your code is working as expected. Lambda sends all logs from your code to the CloudWatch logs group associated with a Lambda function.",
             level: NagMessageLevel.ERROR,
-            rule: LambdaLogging,
+            rule: lambda.LambdaLogging,
             node: node
         });
     }
