@@ -6,40 +6,12 @@ export { default as LambdaLogging } from './LambdaLogging'
 export { default as LambdaTracing } from './LambdaTracing'
 export { default as LambdaESMDestination } from './LambdaESMDestination'
 export { default as LambdaDefaultMemorySize } from './LambdaDefaultMemorySize'
+export { default as LambdaDefaultTimeout } from './LambdaDefaultTimeout'
 
 /*
 """
 Rules for Lambda resources
 """
-class LambdaDefaultMemorySizeRule(CloudFormationLintRule):
-    """
-    Ensure that Lambda functions have an explicit memory value
-    """
-
-    id = "ES1005"  # noqa: VNE003
-    shortdesc = "Lambda Default Memory Size"
-    description = "Ensure that Lambda functions have an explicit memory value"
-    source_url = "https://awslabs.github.io/serverless-rules/rules/lambda/default_memory_size/"
-    tags = ["lambda"]
-
-    _message = "Lambda function {} does not have a MemorySize property"
-
-    def match(self, cfn):
-        """
-        Match against Lambda functions without an explicity MemorySize
-        """
-
-        matches = []
-
-        for key, value in cfn.get_resources(["AWS::Lambda::Function"]).items():
-            memory_size = value.get("Properties", {}).get("MemorySize", None)
-
-            if memory_size is None:
-                matches.append(RuleMatch(["Resources", key], self._message.format(key)))
-
-        return matches
-
-
 class LambdaDefaultTimeoutRule(CloudFormationLintRule):
     """
     Ensure that Lambda functions have an explicit timeout value
